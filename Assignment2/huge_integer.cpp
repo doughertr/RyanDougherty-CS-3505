@@ -136,6 +136,7 @@ huge_integer huge_integer::operator/(const huge_integer right) const
 	}
 
 	int leftPos = 0, rightPos = 0;
+	int leftLength = leftNumString.length(), rightLength = rightNumString.length();
 	int leftDigit = leftNumString[leftPos] - '0';
 	int rightDigit = rightNumString[rightPos] - '0';
 	
@@ -146,10 +147,27 @@ huge_integer huge_integer::operator/(const huge_integer right) const
 			//TODO: right string could be only 1 big
 			leftDigit += leftNumString[++leftPos] - '0';
 		}
-		int divisionResult = rightDigit / leftDigit;	
+		bool isCorrectGuess = false;
+		while(!isCorrectGuess)
+		{
+			int divisionResult = rightDigit / leftDigit;	
+			
+			huge_integer a (rightNumString.substr(0, rightPos));
+			huge_integer b (std::to_string(divisionResult));
+			huge_integer c = a * b;
+			if(c < right)
+			{
+			}
+			else if(c > right <F11>)
+			{
+			}
+			else
+			{
+				isCorrectGuess = true;
+			}
 
+		}
 	}
-
 	return huge_integer("0");
 }
 huge_integer huge_integer::operator%(const huge_integer right) const
@@ -157,6 +175,18 @@ huge_integer huge_integer::operator%(const huge_integer right) const
 	huge_integer divisionResult = *this / right;
 	huge_integer multiplicationResult = divisionResult * right;
 	return *this - multiplicationResult;
+}
+//========================
+//Comparison Operators
+//========================
+bool huge_integer::operator<(const huge_integer right) const
+{
+}
+bool huge_integer::operator>(const huge_integer right) const
+{
+}
+bool huge_integer::operator==(const huge_integer right) const
+{
 }
 //========================
 //Private Helper Functions
@@ -204,7 +234,7 @@ int main(int argc, char* argv[])
 	std::cout << c.get_value() << std::endl;
 	c = a * b;
 	std::cout << c.get_value() << std::endl;
-	huge_integer d("19994");
+	huge_integer b("333333");
 	huge_integer e("555");
 	
 	c = d - e;
