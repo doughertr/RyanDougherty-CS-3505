@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Cs3505_Assignment3
+namespace cs3505
 {
 	class node
 	{

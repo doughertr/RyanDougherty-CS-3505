@@ -2,7 +2,7 @@
 #include "node.h"
 #include <iostream>
 #include <string>
-namespace Cs3505_Assignment3
+namespace cs3505
 {
 	/*
 	 * Static variable intializations
@@ -14,7 +14,7 @@ namespace Cs3505_Assignment3
 	{
 		return constructor_count;
 	}
-	long long wordset::get_destrcutor_count()
+	long long wordset::get_destructor_count()
 	{
 		return destructor_count;
 	}
@@ -123,10 +123,10 @@ namespace Cs3505_Assignment3
 		//we want to remove
 		nextNode = currentNode->next;
 
-		//set the removed node's pointer to NULL
-		//and remove it from the heap
-		currentNode->next = NULL;
+		//delete the current node and set its 
+		//pointer to null
 		delete currentNode;
+		currentNode = NULL;
 
 		//set the previous node's next value 
 		//to the node following the removed node
@@ -146,12 +146,16 @@ namespace Cs3505_Assignment3
 			//found the value!
 			if(current->data == val)
 				return true;
-				current = current->next;
-			}
-			//did not find the value :(
-			//starting val reference now refers to last node
-			return false;
+			current = current->next;
 		}
+		//did not find the value :(
+		//starting val reference now refers to last node
+		return false;
+	}
+	int wordset::size() const
+	{
+		return count;
+	}
 	/*
 	 * Private function definitions
 	 */

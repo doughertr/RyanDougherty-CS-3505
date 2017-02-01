@@ -1,7 +1,7 @@
 #include "node.h";
 #include <string>
 
-namespace Cs3505_Assignment3
+namespace cs3505
 {
 	/*
 	 * Initializing Node static variables
@@ -21,7 +21,6 @@ namespace Cs3505_Assignment3
 	{
 		node::destructor_count++;
 		this->next = NULL;
-		//TODO: Add recursive destruction
 	}
 	node& node::operator=(const node & val)
 	{

@@ -3,7 +3,7 @@
 
 #include <string>
 
-namespace Cs3505_Assignment3
+namespace cs3505
 {
 	class node;
 
@@ -22,7 +22,7 @@ namespace Cs3505_Assignment3
 			wordset & operator= (const wordset & right);
 
 			static long long get_constructor_count();
-			static long long get_destrcutor_count();
+			static long long get_destructor_count();
 		private:
 			int hash(const std::string & val) const;
 			void clean();
