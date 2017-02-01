@@ -24,9 +24,8 @@ namespace Cs3505_Assignment3
 			static long long get_constructor_count();
 			static long long get_destrcutor_count();
 		private:
-			int hash_val(const std::string val);
+			int hash(const std::string & val) const;
 			void clean();
-			bool find(node* & searchVal, const node* & startingVal) const;
 				
 			int capacity;
 			int count;
