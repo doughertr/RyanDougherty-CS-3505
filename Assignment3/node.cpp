@@ -1,4 +1,4 @@
-#include "node.h";
+#include "node.h"
 #include <string>
 
 namespace cs3505

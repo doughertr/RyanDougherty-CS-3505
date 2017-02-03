@@ -1,7 +1,13 @@
+/*
+ *Ryan Dougherty 
+ *u0534947
+ *CS 3505 Assignment 3
+ */
 #include "wordset.h"
 #include "node.h"
 #include <iostream>
 #include <string>
+#include <vector>
 namespace cs3505
 {
 	/*
@@ -32,15 +38,16 @@ namespace cs3505
 		for(int i = 0; i < capacity; i++)
 		{
 			table[i] = NULL;
-		}		
+		}
+		constructor_count++;		
 	}
 	wordset::wordset(const wordset & other) :
 		capacity(0),
 		count(0),
 		table(NULL)
 	{ 
+		*this = other;	
 		constructor_count++;
-		*this = other;
 	}
 	wordset::~wordset()
 	{
@@ -134,9 +141,6 @@ namespace cs3505
 
 		count--;
 	}
-	/*
-	 * Private function impletmentation
-	 */
 	bool wordset::contains(const std::string & val) const
 	{ 
 		int index = hash(val);
@@ -156,6 +160,25 @@ namespace cs3505
 	{
 		return count;
 	}
+	std::vector<std::string> wordset::get_elements() const
+	{
+		std::vector<std::string> elementVect;
+		
+		for(int i = 0; i < capacity; i++)
+		{
+			//if table is empty, move on
+			if(table[i] == NULL)
+				continue;
+			node *current = table[i];
+			while(current != NULL)
+			{
+				//add to the vector the current node's data
+				elementVect.push_back(current->data);
+				current = current->next;
+			}
+		}
+		return elementVect;
+	}
 	/*
 	 * Private function definitions
 	 */
@@ -168,19 +191,23 @@ namespace cs3505
 	}
 	void wordset::clean()
 	{
+		//return if the table is not set to anything
 		if(table == NULL)
 			return;
+		
 		for(int i = 0; i < capacity; i++)
 		{
 			node * current = table[i];
 			table[i] = NULL;
 			while(current != NULL)
 			{
+				//advance the node and delete current
 				node * next = current->next;
 				delete current;
 				current = next;
 			}
 		}
+		//delete the table pointer
 		delete [] table;
 		capacity = 0;
 		count = 0;

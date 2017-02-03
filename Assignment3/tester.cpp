@@ -1,121 +1,219 @@
 /*
- * This is a tester similar to the tester written in class.  It reads
- * words from a text file, then adds the words to two sets: A built-in
- * set class, and our wordset class.  After reading the file, it
- * prints out all the words stored in the STL set object.  At the end
- * of the test, it prints out the sizes of both sets to see that they
- * are the same.
- *
- * After the test completes, I make sure the local variabls are properly
- * cleaned up.
- *
- * If the comments wrap lines, widen your emacs window.
- *
- * Peter Jensen
- * January 24, 2017
+ *Ryan Dougherty 
+ *u0534947
+ *CS 3505 Assignment 3
  */
-
 #include <iostream>
 #include <fstream>
 #include <set>
 #include <iterator>
+#include <gtest/gtest.h>
 #include "wordset.h"
 #include "node.h"
 
 using namespace std;
 
-// Note:  Our classes were declared in a cs3505 namepsace.
-//        Instead of 'using namespace cs3505', I qualify the class names below with cs3505::
-
-int main ()
+/*
+ *FILE TESTS
+ */
+TEST(wordsetTest, fileTest1)
 {
-	// Open up another block.  This way, when the block ends,
-	// variables local to the block will be destroyed, but main
-	// will still be running.  (Did you know that you can open
-	// up a block at any time to control local variable scope and
-	// lifetime?)
-
+	//placing it in its own scope. Used to count number of destructions
 	{
-		// Create the two sets.  Declaring the local variables constructs the objects.
-
-		set<string>      stl_set_of_words;  // The built-in set class - no constructor parameters.
-		cs3505::wordset  our_set_of_words(1000);  // Our set class, with a hashtable of 1000 slots.
+		set<string>      stl_set_of_words;
+		cs3505::wordset  our_set_of_words(1000);
 		cout << "constructed wordset" << endl;
-		// Open the file stream for reading.  (We'll be able to use it just like
-		//   the keyboard stream 'cin'.)
 
-		ifstream in("EntireBeeMoviewScript.txt");
-
-		// Loop for reading the file.  Note that it is controlled
-		//   from within the loop (see the 'break').
-
+		ifstream in("EntireBeeMovieScript.txt"); //because, you know, why not?
+		
 		while (true)
 		{
-			// Read a word (don't worry about punctuation)
-
 			string word;
 			in >> word;
-
-			// If the read failed, we're probably at end of file
-			//   (or else the disk went bad).  Exit the loop.
-
+			//continue reading words from the file until it fails
 			if (in.fail())
 				break;
-
-			// Word successfully read.  Add it to both sets.
-
 			stl_set_of_words.insert(word);
 			our_set_of_words.add(word);
 		}
 
 		// Close the file.
-
 		in.close();
-
-		// Print out the words found in the STL set.  I do this to show
-		//   students how to get at the entries in an STL object.  For
-		//   more examples, look up 'STL iterator examples'.
-		// Notice that the iterator object 'it' acts like a pointer, but
-		//   it is not a pointer.  (Bad, bad, bad design choice, but not mine!)
-		// Feel free to comment this out.
-
 		for (set<string>::iterator it = stl_set_of_words.begin(); it != stl_set_of_words.end(); it++)
 		{
 			string s = *it;
 			cout << s << endl;
 		}
-
-		// Print out the number of words found in each set.
-
-		cout << endl;
-		cout << "STL set contains " << stl_set_of_words.size() << " unique words.\n";
-		cout << "Our set contains " << our_set_of_words.size() << " unique words.\n";
-		cout << endl;
-
-		// Done.  Notice that this code block ends below.  Any local
-		// variables declared within this block will be automatically
-		// destroyed.  Local objects will have their destructors
-		// called.  (Blocks are great for controlling scope/lifetime.)
-
+		//check to make sure set size and our custom wordset size are equivalent
+		EXPECT_EQ(stl_set_of_words.size(), our_set_of_words.size()) << "STL set size: " << stl_set_of_words.size() << " | custom wordset size: " << our_set_of_words.size();
 	}
-
-	// Now that the objects have been destroyed, I will simply call my auditing
-	// code to print out how many times constructors have been called, and
-	// how many times destructors have been called.  They should exactly match.
-	// If not, we have a memory problem.
-
-	cout << "Class cs3505::wordset:" << endl;
-	cout << "    Objects created:  " << cs3505::wordset::get_constructor_count() << endl;
-	cout << "    Objects deleted:  " << cs3505::wordset::get_destructor_count() << endl;
+	//check if wordset was properly created and destroyed
+	EXPECT_EQ(cs3505::wordset::get_constructor_count(), cs3505::wordset::get_destructor_count()) << "wordset constructor count: " << cs3505::wordset::get_constructor_count() << " | wordset destructor count: " << cs3505::wordset::get_destructor_count();
+	
 	cout << endl;
 
-	cout << "Class cs3505::node:" << endl;
-	cout << "    Objects created:  " << cs3505::node::get_constructor_count() << endl;
-	cout << "    Objects deleted:  " << cs3505::node::get_destructor_count() << endl;
-	cout << endl;
-
-	// Now we're really done.  End main.
-
-	return 0;
+	//check if all nodes were properly created and destroyed
+	EXPECT_EQ(cs3505::node::get_constructor_count(), cs3505::node::get_destructor_count()) << "node constructor count: " << cs3505::node::get_constructor_count() << " | node destructor count: " << cs3505::node::get_destructor_count(); 
 }
 
+TEST(wordsetTest, fileTest2)
+{
+	//placing it in its own scope. Used to count number of destructions
+	{
+		set<string>      stl_set_of_words;
+		cs3505::wordset  our_set_of_words(1000);
+		cout << "constructed wordset" << endl;
+
+		ifstream in("SavingPrivateRyanScript.txt"); //My favorite movie :)
+		
+		while (true)
+		{
+			string word;
+			in >> word;
+			//continue reading words from the file until it fails
+			if (in.fail())
+				break;
+			stl_set_of_words.insert(word);
+			our_set_of_words.add(word);
+		}
+
+		// Close the file.
+		in.close();
+		for (set<string>::iterator it = stl_set_of_words.begin(); it != stl_set_of_words.end(); it++)
+		{
+			string s = *it;
+			cout << s << endl;
+		}
+		//check to make sure set size and our custom wordset size are equivalent
+		EXPECT_EQ(stl_set_of_words.size(), our_set_of_words.size()) << "STL set size: " << stl_set_of_words.size() << " | custom wordset size: " << our_set_of_words.size();
+	}
+	//check if wordset was properly created and destroyed
+	EXPECT_EQ(cs3505::wordset::get_constructor_count(), cs3505::wordset::get_destructor_count()) << "wordset constructor count: " << cs3505::wordset::get_constructor_count() << " | wordset destructor count: " << cs3505::wordset::get_destructor_count();
+	
+	cout << endl;
+
+	//check if all nodes were properly created and destroyed
+	EXPECT_EQ(cs3505::node::get_constructor_count(), cs3505::node::get_destructor_count()) << "node constructor count: " << cs3505::node::get_constructor_count() << " | node destructor count: " << cs3505::node::get_destructor_count(); 
+}
+/*
+ *REMOVE TESTS
+ */
+TEST(wordsetTest, removeStandard)
+{
+	//tests to make sure remove does its job
+	cs3505::wordset w(100);
+	w.add("hello");
+	w.add("hi");
+	w.add("bonjour");
+	w.add("good-day");
+	w.remove("hello");
+	ASSERT_FALSE(w.contains("hello"));
+}
+TEST(wordsetTest, removeBlank)
+{
+	//tests that the wordset will handle nonexisting
+	//removes gracefully
+	cs3505::wordset w(100);
+	w.remove("hello");
+	ASSERT_TRUE(true);
+}
+TEST(wordsetTest, removeNULL)
+{
+	//tests removal of a NULL value
+	cs3505::wordset w(100);
+	w.remove(NULL);
+	ASSERT_TRUE(true);
+}
+
+/*
+ *GET CONTENTS TESTS
+ */
+TEST(wordsetTest, getElementsStandard)
+{	
+	//tests that the vector has correct length and
+	//unique values
+	cs3505::wordset w(100);
+	w.add("hello");
+	w.add("hi");
+	w.add("hi");
+	w.add("bonjour");
+	w.add("good-day");
+	std::vector<std::string> vec = w.get_elements();
+	ASSERT_EQ(4 ,vec.size());
+	for(std::vector<std::string>::iterator it = vec.begin(); it != vec.end(); it++ )
+	{
+		ASSERT_TRUE(w.contains(*it));
+		w.remove(*it);
+	}
+}
+TEST(wordset, getElementsBlank)
+{
+	//checks to make sure a blank wordset returns
+	//a blank vector
+	cs3505::wordset w(100);
+	std::vector<std::string> vec = w.get_elements();
+	ASSERT_EQ(0, vec.size());
+}
+TEST(wordset, assignmentStandard)
+{
+	//tests that two wordsets are equal
+	//when assigned to eachother
+	cs3505::wordset w(100);
+
+	w.add("hello");
+	w.add("hi");
+	w.add("bonjour");
+	w.add("good-day");
+	w.remove("hello");
+
+	cs3505::wordset x = w;
+	ASSERT_EQ(x.size(), w.size());
+	std::vector<std::string> vec1 = w.get_elements();
+	std::vector<std::string> vec2 = x.get_elements();
+	for(int i = 0; i < vec1.size(); i++)
+	{
+		EXPECT_EQ(vec1[i], vec2[i]) << "Vectors were not equal at index: " << i << " | vec1: " << vec1[i] << ", vec2: " << vec2[i] << std::endl; 
+	}
+}
+TEST(wordset, assignmentCompareNodes)
+{
+	//test to make sure node's next values dont
+	//point to the same address
+	cs3505::wordset ws1(100);
+
+	ws1.add("hello");
+	ws1.add("hi");
+	ws1.add("bonjour");
+	ws1.add("good-day");
+	ws1.add("aloha");
+
+	cs3505::wordset ws2 = ws1;
+	ws1.remove("hello");
+	ws1.remove("hi");
+	ws1.remove("bonjour");
+	ws1.remove("good-day");
+	ws1.remove("aloha");
+
+	std::vector<std::string> vec1 = ws1.get_elements();
+	std::vector<std::string> vec2 = ws2.get_elements();
+
+	//if the wordsets are not pointing to the same nodes,
+	//then the element vectors will be different sizes 
+	//and vector 2's values will not equal null
+	ASSERT_EQ(vec1.size(), 0);
+	ASSERT_EQ(vec2.size(), 5);
+	
+	for(int i = 0; i < 5; i++)
+	{
+		ASSERT_NE(vec2[i], NULL);	
+	}
+}
+
+int main (int argc, char**argv)
+{
+	/* I used GoogleTest as my testing framework. Compiling and running this file will execute the tests.
+	 * Running the MakeFile will also run the tests.
+	 */
+	testing::InitGoogleTest(&argc, argv);
+	return RUN_ALL_TESTS();
+}
