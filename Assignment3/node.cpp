@@ -41,6 +41,9 @@ namespace cs3505
 	{
 		return destructor_count;
 	}
-
-
+	void node::reset_counters()
+	{
+		constructor_count = 0;
+		destructor_count = 0;	
+	}
 }

@@ -24,14 +24,19 @@ namespace cs3505
 	{
 		return destructor_count;
 	}
+	void wordset::reset_counters()
+	{
+		wordset::constructor_count = 0;
+		wordset::destructor_count = 0;
+	}
 	/*
 	 * Public function declarations
-	 */	
-	wordset::wordset(int capacity) : 
-		capacity(capacity),
-		count(0)
+	 */
+	wordset::wordset(int capacity) 
 	{
-		table = new node*[capacity];
+		this->capacity = capacity;
+		this->count = 0;
+		this->table = new node*[capacity];
 
 		//set every node in the table to NULL
 		//or else you're gonna have a bad time
@@ -39,14 +44,15 @@ namespace cs3505
 		{
 			table[i] = NULL;
 		}
-		constructor_count++;		
+		constructor_count++;
 	}
-	wordset::wordset(const wordset & other) :
-		capacity(0),
-		count(0),
-		table(NULL)
+	wordset::wordset(const wordset & other) 
 	{ 
-		*this = other;	
+		this->capacity = 0;
+		this->count = 0;
+		this->table = NULL;
+
+		*this = other;
 		constructor_count++;
 	}
 	wordset::~wordset()
@@ -60,7 +66,7 @@ namespace cs3505
 		if(this == &right)
 			return *this;
 		clean();
-	
+
 		capacity = right.capacity;
 		this->table = new node*[capacity];
 
@@ -69,7 +75,10 @@ namespace cs3505
 			//if the other table has no nodes,
 			//then continue iterating 
 			if(right.table[i] == NULL)
+			{
+				this->table[i] = NULL;
 				continue;
+			}
 			node *current = right.table[i];
 			while(current != NULL)
 			{
@@ -82,6 +91,11 @@ namespace cs3505
 
 	void wordset::add (const std::string & val)
 	{
+		//handle empty and NULL strings
+		if(val.empty())
+			return;
+
+
 		int index = hash(val);
 		node *current = table[index], *previous = NULL;
 
@@ -101,45 +115,39 @@ namespace cs3505
 		current = new node(val);
 
 		//if previous value doesn't exist, then
-		//it must be the first value to enter
-		//the bucket
+		//it must be the first value to enter the bucket
 		if(previous == NULL)
 			table[index] = current;
 		//if it exists then set the next node in
 		//the bucket to current
 		else
-			previous->next = current;	
+			previous->next = current;
 
-		count++;		
+		count++;
 	}
 	void wordset::remove(const std::string & val)
 	{
+		//handle empty and NULL strings
+		if(val.empty())
+			return;
+
 		int index = hash(val);
-		node *currentNode = table[index], *previousNode = NULL, *nextNode = NULL;
-
-		while(currentNode->data != val)
+		node *current = table[index], *nxt = NULL, *previous = NULL;
+		while(current != NULL)
 		{
-			previousNode = currentNode;
-			currentNode = currentNode->next;
-
-			//returns if it cannot find the value
-			if(currentNode == NULL)
-				return;
+			if(current->data == val)
+			{
+				nxt = current->next;
+				delete current;
+				if(previous == NULL)
+					table[index] = NULL;
+				else
+					current = nxt;
+				count--;
+			}
+			previous = current;
+			current = current->next;
 		}
-		//next node is the node following the node
-		//we want to remove
-		nextNode = currentNode->next;
-
-		//delete the current node and set its 
-		//pointer to null
-		delete currentNode;
-		currentNode = NULL;
-
-		//set the previous node's next value 
-		//to the node following the removed node
-		previousNode->next = nextNode;
-
-		count--;
 	}
 	bool wordset::contains(const std::string & val) const
 	{ 
@@ -163,7 +171,7 @@ namespace cs3505
 	std::vector<std::string> wordset::get_elements() const
 	{
 		std::vector<std::string> elementVect;
-		
+
 		for(int i = 0; i < capacity; i++)
 		{
 			//if table is empty, move on
@@ -194,7 +202,7 @@ namespace cs3505
 		//return if the table is not set to anything
 		if(table == NULL)
 			return;
-		
+
 		for(int i = 0; i < capacity; i++)
 		{
 			node * current = table[i];
@@ -202,15 +210,17 @@ namespace cs3505
 			while(current != NULL)
 			{
 				//advance the node and delete current
-				node * next = current->next;
+				node * nxt = current->next;
 				delete current;
-				current = next;
+				current = nxt;
 			}
 		}
 		//delete the table pointer
 		delete [] table;
+		table = NULL;
 		capacity = 0;
 		count = 0;
 	}
-		
+
 }
+

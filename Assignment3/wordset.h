@@ -39,10 +39,10 @@ namespace cs3505
 		         * in this hashtable.
 			 */
 		 	std::vector<std::string> get_elements() const;
-
 			
 			static long long get_constructor_count();
 			static long long get_destructor_count();
+			static void reset_counters();
 		private:
 			int hash(const std::string & val) const;
 			void clean();

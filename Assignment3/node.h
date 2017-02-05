@@ -18,14 +18,18 @@ namespace cs3505
 		public:
 			static long long get_constructor_count();
 			static long long get_destructor_count();
-			node & operator=(const node & val);
+			//resets static node counters to 0
+			static void reset_counters();
+
 			//gets a string copy of the data
 			std::string get_data() const;
 		private:
+			//assignment operator for the node class
+			node & operator=(const node & val);
+			//constructor
 			node(const std::string & val);
 			~node();
 			
-			//string data
 			std::string data;
 			node* next;	
 
